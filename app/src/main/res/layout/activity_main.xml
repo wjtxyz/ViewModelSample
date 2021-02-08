@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
             name="viewModel"
             type="com.xxx.viewmodelsample.MainActivityViewModel" />
+
+        <variable
+            name="firstList"
+            type="List&lt;String>" />
+
+        <import type="java.util.List" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -33,5 +39,78 @@
             android:hint="Survive configuration change and background process killing"
             android:text='@={(String)viewModel.savedStateHandle.getLiveData("editText")}' />
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:background="#77ffff">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="Listview items NOT survive configuration change"
+                android:textColor="@android:color/darker_gray" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:itemTemplate="@{@layout/item_template_string}"
+                app:items="@{firstList}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:background="#7777ff">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="Listview items SURVIVE configuration change, NOT survive background process killing"
+                android:textColor="@android:color/darker_gray" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:itemTemplate="@{@layout/item_template_string}"
+                app:items="@{viewModel.secondList}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:background="#ffff77">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="Listview items SURVIVE configuration change and background process killing"
+                android:textColor="@android:color/darker_gray" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:itemTemplate="@{@layout/item_template_string}"
+                app:items='@{(List&lt;String>)viewModel.getLiveDataObservableListSavedState("thirdList")}'
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </FrameLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick='@{()->viewModel.onAddItem(firstList, viewModel.secondList, (List&lt;String>)viewModel.getLiveDataObservableListSavedState("thirdList"))}'
+            android:text="add item" />
     </LinearLayout>
 </layout>
