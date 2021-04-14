@@ -14,6 +14,9 @@ import androidx.fragment.app.DialogFragment;
 
 public class DialogActivity extends AppCompatActivity {
 
+    MyDialog myDialog;
+    static final String KEY_DIALOG_SAVED_INSTANCE = "dialog-saved-instance";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +29,28 @@ public class DialogActivity extends AppCompatActivity {
         findViewById(R.id.bt2).setOnClickListener((v) -> {
             new MyDialogFragment().show(getSupportFragmentManager(), null);
         });
+
+
+        findViewById(R.id.bt3).setOnClickListener((v) -> {
+            (myDialog = new MyDialog(this)).show();
+        });
+
+        //restore dialog UI state
+        if (savedInstanceState != null) {
+            final Bundle dialogSavedInstance = savedInstanceState.getBundle(KEY_DIALOG_SAVED_INSTANCE);
+            if (dialogSavedInstance != null) {
+                (myDialog = new MyDialog(this)).onRestoreInstanceState(dialogSavedInstance);
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //save dialog UI state
+        if (myDialog != null) {
+            outState.putBundle(KEY_DIALOG_SAVED_INSTANCE, myDialog.onSaveInstanceState());
+        }
     }
 
     /***
